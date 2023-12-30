@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Param,
-  Post,
-  UseFilters,
-  UseInterceptors,
-  UsePipes,
-  ValidationPipe,
-} from '@nestjs/common';
+import { Controller, Param, Post, UseFilters, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ImageDeleteParams } from './image-delete.dto';
 import { ImageDeleteService } from './image-delete.service';
 import { APIExceptionFilter } from 'src/request-circles/filters/api-exception.filter';

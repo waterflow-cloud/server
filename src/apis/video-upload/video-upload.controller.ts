@@ -1,13 +1,4 @@
-import {
-  Body,
-  Controller,
-  Headers,
-  Post,
-  UploadedFile,
-  UseFilters,
-  UseInterceptors,
-  UsePipes,
-} from '@nestjs/common';
+import { Body, Controller, Headers, Post, UploadedFile, UseFilters, UseInterceptors, UsePipes } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
@@ -17,10 +8,7 @@ import { APIExceptionFilter } from 'src/request-circles/filters/api-exception.fi
 import { APIInterceptor } from 'src/request-circles/interceptors/api-interceptor';
 import { ParamsValidationPipe } from 'src/request-circles/pipes/params-validation.pipe';
 import * as uuid from 'uuid';
-import {
-  VideoUploadAPIContent,
-  VideoUploadRequestBody,
-} from './video-upload.dto';
+import { VideoUploadAPIContent, VideoUploadRequestBody } from './video-upload.dto';
 import { VideoUploadService } from './video-upload.service';
 
 @Controller('video/upload')
@@ -34,8 +22,7 @@ export class VideoUploadController {
       limits: { fileSize: CONFIG.maxVideoUploadSize },
       storage: diskStorage({
         destination: VIDEO_TEMP_PATH,
-        filename: (_req, file, cb) =>
-          cb(null, `${uuid.v4()}${extname(file.originalname)}`),
+        filename: (_req, file, cb) => cb(null, `${uuid.v4()}${extname(file.originalname)}`),
       }),
     }),
   )

@@ -38,34 +38,21 @@ export class ImageUploadService {
   ): Promise<ImageUploadAPIContent> {
     /** Load and instant image data. */
     const tempImageFilePath = fileTempPath;
-    const [errImageOriginBuffer, imageOriginBuffer] = await to(
-      fsp.readFile(tempImageFilePath),
-    );
+    const [errImageOriginBuffer, imageOriginBuffer] = await to(fsp.readFile(tempImageFilePath));
     if (errImageOriginBuffer) {
       deleteFile(tempImageFilePath);
       throw new APIException(API_STATUS_CODE.INTERNAL_ERROR, 500);
     }
     const sharpInstance = sharp(imageOriginBuffer);
 
-    const [errImageMetaData, imageMetaData] = await to(
-      sharpInstance.metadata(),
-    );
+    const [errImageMetaData, imageMetaData] = await to(sharpInstance.metadata());
     if (errImageMetaData) {
       deleteFile(tempImageFilePath);
       throw new APIException(API_STATUS_CODE.ILLEGAL_FILE_FORMAT, 400);
     }
 
     /* Check the image format, only following formats listed are permitted */
-    const validImageFormats = [
-      'jpg',
-      'jpeg',
-      'svg',
-      'png',
-      'webp',
-      'gif',
-      'bmp',
-      'tif',
-    ];
+    const validImageFormats = ['jpg', 'jpeg', 'svg', 'png', 'webp', 'gif', 'bmp', 'tif'];
     if (!validImageFormats.includes(imageMetaData.format)) {
       deleteFile(tempImageFilePath);
       throw new APIException(API_STATUS_CODE.ILLEGAL_FILE_FORMAT, 400);
@@ -79,9 +66,7 @@ export class ImageUploadService {
     }
 
     /** Reformat target image with quality optimization. */
-    const targetQuality = options.useCompress
-      ? CONFIG.defaultImageCompressRatio
-      : 100;
+    const targetQuality = options.useCompress ? CONFIG.defaultImageCompressRatio : 100;
     const targetFileExtname = options.useWebp ? 'webp' : imageMetaData.format;
     try {
       sharpInstance.toFormat(targetFileExtname, { quality: targetQuality });
@@ -108,9 +93,7 @@ export class ImageUploadService {
      * Otherwise output the uploaded image.
      */
     let targetFilePath, fileSize;
-    const [errExistImageEntity, existImageEntity] = await to(
-      this.imageRepository.findBy({ fileHash: hash }),
-    );
+    const [errExistImageEntity, existImageEntity] = await to(this.imageRepository.findBy({ fileHash: hash }));
     if (errExistImageEntity) {
       deleteFile(tempImageFilePath);
       throw new APIException(API_STATUS_CODE.INTERNAL_ERROR, 500);

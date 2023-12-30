@@ -19,13 +19,9 @@ export class ImageFetchService {
   ) {}
 
   async fetchInfo(id: string): Promise<ImageFetchInfoAPIContent | null> {
-    const [errImageEntity, imageEntity] = await to(
-      this.imageRepository.findBy({ id: id }),
-    );
-    if (errImageEntity)
-      throw new APIException(API_STATUS_CODE.INTERNAL_ERROR, 500);
-    if (imageEntity === null)
-      throw new APIException(API_STATUS_CODE.RESOURCE_NOT_FOUNT, 404);
+    const [errImageEntity, imageEntity] = await to(this.imageRepository.findBy({ id: id }));
+    if (errImageEntity) throw new APIException(API_STATUS_CODE.INTERNAL_ERROR, 500);
+    if (imageEntity === null) throw new APIException(API_STATUS_CODE.RESOURCE_NOT_FOUNT, 404);
     return {
       id: imageEntity.id,
       name: imageEntity.name,
@@ -44,9 +40,7 @@ export class ImageFetchService {
     const imageFilePath = path.join(IMAGE_PATH, id);
 
     /** Query the entity in database record */
-    const [errImageEntity, imageEntity] = await to(
-      this.imageRepository.findBy({ id: id }),
-    );
+    const [errImageEntity, imageEntity] = await to(this.imageRepository.findBy({ id: id }));
 
     /** Process the locked/not-found exception for image resource */
     if (!fileExist(imageFilePath)) throw new ResourceException('ImageNotFound');

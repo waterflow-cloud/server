@@ -16,30 +16,22 @@ export class ResourceExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     switch (exception.exceptionType) {
       case 'ImageLocked':
-        const LockedSketchImageBuffer = fs.readFileSync(
-          IMAGE_BLOCKED_SKETCH_PATH,
-        );
+        const LockedSketchImageBuffer = fs.readFileSync(IMAGE_BLOCKED_SKETCH_PATH);
         response.header('Content-Type', 'image/png');
         response.status(403).send(LockedSketchImageBuffer);
         break;
       case 'VideoLocked':
-        const LockedSketchVideoBuffer = fs.readFileSync(
-          VIDEO_BLOCKED_SKETCH_PATH,
-        );
+        const LockedSketchVideoBuffer = fs.readFileSync(VIDEO_BLOCKED_SKETCH_PATH);
         response.header('Content-Type', 'application/x-mpegURL');
         response.status(403).send(LockedSketchVideoBuffer);
         break;
       case 'ImageNotFound':
-        const ImageNotFoundSketchBuffer = fs.readFileSync(
-          IMAGE_NOT_FOUND_SKETCH_PATH,
-        );
+        const ImageNotFoundSketchBuffer = fs.readFileSync(IMAGE_NOT_FOUND_SKETCH_PATH);
         response.header('Content-Type', 'image/png');
         response.status(404).send(ImageNotFoundSketchBuffer);
         break;
       case 'VideoNotFound':
-        const VideoNotFoundSketchBuffer = fs.readFileSync(
-          VIDEO_NOT_FOUND_SKETCH_PATH,
-        );
+        const VideoNotFoundSketchBuffer = fs.readFileSync(VIDEO_NOT_FOUND_SKETCH_PATH);
         response.header('Content-Type', 'application/x-mpegURL');
         response.status(404).json(VideoNotFoundSketchBuffer);
         break;

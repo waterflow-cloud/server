@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Get,
-  Param,
-  Res,
-  UseFilters,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Controller, Get, Param, Res, UseFilters, UseInterceptors } from '@nestjs/common';
 import { Response } from 'express';
 import { APIExceptionFilter } from 'src/request-circles/filters/api-exception.filter';
 import { APIInterceptor } from 'src/request-circles/interceptors/api-interceptor';
@@ -36,11 +29,7 @@ export class VideoFetchController {
 
   @Get('/:id/chunks/:filename')
   @UseFilters(ResourceExceptionFilter)
-  async fetchChunk(
-    @Param('id') id: string,
-    @Param('filename') filename: string,
-    @Res() response: Response,
-  ) {
+  async fetchChunk(@Param('id') id: string, @Param('filename') filename: string, @Res() response: Response) {
     const chunk = await this.videoFetchService.fetchChuck(id, filename);
     response.setHeader('Content-Type', `video/mp2t`);
     response.setHeader('Access-Control-Allow-Origin', '*');

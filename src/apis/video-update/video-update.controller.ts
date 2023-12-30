@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Param,
-  Post,
-  UseFilters,
-  UseInterceptors,
-  UsePipes,
-  ValidationPipe,
-} from '@nestjs/common';
+import { Controller, Param, Post, UseFilters, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
 import { VideoUpdateInfoParams } from './video-update.dto';
 import { VideoUpdateService } from './video-update.service';
 import { APIExceptionFilter } from 'src/request-circles/filters/api-exception.filter';
@@ -31,8 +23,7 @@ export class VideoUpdateController {
       limits: { fileSize: CONFIG.maxImageUploadSize },
       storage: diskStorage({
         destination: IMAGE_TEMP_PATH,
-        filename: (_req, file, cb) =>
-          cb(null, `${uuid.v4()}${extname(file.originalname)}`),
+        filename: (_req, file, cb) => cb(null, `${uuid.v4()}${extname(file.originalname)}`),
       }),
     }),
   )

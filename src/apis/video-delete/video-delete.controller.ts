@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Param,
-  Post,
-  UseFilters,
-  UseInterceptors,
-  UsePipes,
-  ValidationPipe,
-} from '@nestjs/common';
+import { Controller, Param, Post, UseFilters, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
 import { VideoDeleteParams } from './video-delete.dto';
 import { VideoDeleteService } from './video-delete.service';
 import { APIExceptionFilter } from 'src/request-circles/filters/api-exception.filter';

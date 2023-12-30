@@ -7,12 +7,7 @@ import { API_STATUS_CODE } from 'src/consts/status-code';
 import { APIException } from 'src/exceptions/api.exception';
 import { CONFIG } from 'src/consts/config';
 import { convertUnit } from 'src/utils/calc';
-import {
-  deleteDir,
-  deleteFile,
-  getDirSize,
-  getFileMD5Hash,
-} from 'src/utils/file';
+import { deleteDir, deleteFile, getDirSize, getFileMD5Hash } from 'src/utils/file';
 import { DependenciesFlag } from 'src/consts/dep-flags';
 import { getFetchVideoUrl } from 'src/consts/url';
 import { Inject, Injectable } from '@nestjs/common';
@@ -42,9 +37,7 @@ export class VideoUploadService {
     const tempVideoFilePath = fileTempPath;
     /** Check the file mime information first */
     const [errVideoMeta, videoMeta] = await to(
-      promisify<string, fluentFFmpeg.FfprobeData>(fluentFFmpeg.ffprobe)(
-        tempVideoFilePath,
-      ),
+      promisify<string, fluentFFmpeg.FfprobeData>(fluentFFmpeg.ffprobe)(tempVideoFilePath),
     );
     if (errVideoMeta) {
       deleteFile(tempVideoFilePath);
@@ -56,9 +49,7 @@ export class VideoUploadService {
       throw new APIException(API_STATUS_CODE.INTERNAL_ERROR, 500);
     }
 
-    const [errExistVideoEntity, existVideoEntity] = await to(
-      this.videoRepository.findBy({ fileHash: videoHash }),
-    );
+    const [errExistVideoEntity, existVideoEntity] = await to(this.videoRepository.findBy({ fileHash: videoHash }));
     if (errExistVideoEntity) {
       deleteFile(tempVideoFilePath);
       throw new APIException(API_STATUS_CODE.INTERNAL_ERROR, 500);
@@ -88,14 +79,8 @@ export class VideoUploadService {
      * And then make optimization according to options.
      */
     await fsp.mkdir(path.join(targetStorageDirectoryPath, 'chunks'));
-    const chuckFilesPath = path.join(
-      targetStorageDirectoryPath,
-      './chunks/video_%03d.ts',
-    );
-    const m3u8FilePath = path.join(
-      targetStorageDirectoryPath,
-      `${videoId}.m3u8`,
-    );
+    const chuckFilesPath = path.join(targetStorageDirectoryPath, './chunks/video_%03d.ts');
+    const m3u8FilePath = path.join(targetStorageDirectoryPath, `${videoId}.m3u8`);
     const ffmpegInstance = fluentFFmpeg()
       .input(fileTempPath)
       .addOption('-y')
@@ -110,11 +95,7 @@ export class VideoUploadService {
       .addOption('-hls_segment_filename', chuckFilesPath)
       .output(m3u8FilePath);
     if (options.useCompress) {
-      ffmpegInstance
-        .audioCodec('aac')
-        .audioBitrate('128k')
-        .videoBitrate('800k')
-        .addOption('-crf', '23');
+      ffmpegInstance.audioCodec('aac').audioBitrate('128k').videoBitrate('800k').addOption('-crf', '23');
     }
 
     const runFfmpegTask = async (): Promise<void> => {
@@ -134,11 +115,7 @@ export class VideoUploadService {
       throw new APIException(API_STATUS_CODE.INTERNAL_ERROR, 500);
     }
 
-    const videoSize = convertUnit(
-      await getDirSize(targetStorageDirectoryPath),
-      'Byte',
-      'MB',
-    );
+    const videoSize = convertUnit(await getDirSize(targetStorageDirectoryPath), 'Byte', 'MB');
 
     const [errCreateAndSaveVideo] = await to(
       this.videoRepository.createAndSave({

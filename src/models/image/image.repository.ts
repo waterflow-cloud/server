@@ -70,18 +70,7 @@ export class ImageRepository {
     if (condition.name) query.where({ name: condition.name });
     const resultFields = await query.orderBy('timestamp', 'desc');
     if (resultFields.length === 0) return null;
-    const {
-      id,
-      name,
-      comment,
-      category,
-      timestamp,
-      size,
-      width,
-      height,
-      locked,
-      fileHash,
-    } = resultFields[0];
+    const { id, name, comment, category, timestamp, size, width, height, locked, fileHash } = resultFields[0];
     return {
       id,
       name,

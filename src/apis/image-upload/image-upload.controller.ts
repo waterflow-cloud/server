@@ -1,22 +1,10 @@
 import * as uuid from 'uuid';
 import { APIInterceptor } from 'src/request-circles/interceptors/api-interceptor';
-import {
-  Body,
-  Controller,
-  Headers,
-  Post,
-  UploadedFile,
-  UseFilters,
-  UseInterceptors,
-  UsePipes,
-} from '@nestjs/common';
+import { Body, Controller, Headers, Post, UploadedFile, UseFilters, UseInterceptors, UsePipes } from '@nestjs/common';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { FileInterceptor } from '@nestjs/platform-express';
-import {
-  ImageUploadAPIContent,
-  ImageUploadRequestBody,
-} from './image-upload.dto';
+import { ImageUploadAPIContent, ImageUploadRequestBody } from './image-upload.dto';
 import { ImageUploadService } from './image-upload.service';
 import { ParamsValidationPipe } from 'src/request-circles/pipes/params-validation.pipe';
 import { APIExceptionFilter } from 'src/request-circles/filters/api-exception.filter';
@@ -34,8 +22,7 @@ export class ImageUploadController {
       limits: { fileSize: CONFIG.maxImageUploadSize },
       storage: diskStorage({
         destination: IMAGE_TEMP_PATH,
-        filename: (_req, file, cb) =>
-          cb(null, `${uuid.v4()}${extname(file.originalname)}`),
+        filename: (_req, file, cb) => cb(null, `${uuid.v4()}${extname(file.originalname)}`),
       }),
     }),
   )

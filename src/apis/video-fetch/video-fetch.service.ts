@@ -19,13 +19,9 @@ export class VideoFetchService {
   ) {}
 
   async fetchInfo(id: string): Promise<VideoFetchInfoAPIContent | null> {
-    const [errImageEntity, imageEntity] = await to(
-      this.videoRepository.findBy({ id: id }),
-    );
-    if (errImageEntity)
-      throw new APIException(API_STATUS_CODE.INTERNAL_ERROR, 500);
-    if (imageEntity === null)
-      throw new APIException(API_STATUS_CODE.RESOURCE_NOT_FOUNT, 404);
+    const [errImageEntity, imageEntity] = await to(this.videoRepository.findBy({ id: id }));
+    if (errImageEntity) throw new APIException(API_STATUS_CODE.INTERNAL_ERROR, 500);
+    if (imageEntity === null) throw new APIException(API_STATUS_CODE.RESOURCE_NOT_FOUNT, 404);
     return {
       id: imageEntity.id,
       name: imageEntity.name,
@@ -46,9 +42,7 @@ export class VideoFetchService {
     const m3u8FilePath = path.join(VIDEO_PATH, id, `${id}.m3u8`);
 
     /** Query the entity in database record */
-    const [errVideoEntity, videoEntity] = await to(
-      this.videoRepository.findBy({ id: id }),
-    );
+    const [errVideoEntity, videoEntity] = await to(this.videoRepository.findBy({ id: id }));
 
     /** Process the locked/not-found exception for image resource */
     if (!fileExist(m3u8FilePath)) throw new ResourceException('VideoNotFound');
