@@ -1,19 +1,19 @@
+import { Inject, Injectable } from '@nestjs/common';
+import to from 'await-to-js';
 import * as crypto from 'crypto';
 import * as fsp from 'fs/promises';
 import * as path from 'path';
 import * as sharp from 'sharp';
-import * as uniqId from 'uniqid';
-import to from 'await-to-js';
-import { API_STATUS_CODE } from 'src/consts/status-code';
 import { CONFIG } from 'src/consts/config';
-import { deleteFile, getFileSize } from 'src/utils/file';
 import { DependenciesFlag } from 'src/consts/dep-flags';
-import { getFetchImageUrl } from 'src/consts/url';
-import { IMAGE_PATH } from 'src/consts/paths';
-import { ImageRepository } from 'src/models/image/image.repository';
-import { ImageUploadAPIContent } from './image-upload.dto';
-import { Inject, Injectable } from '@nestjs/common';
+import { IMAGE_STORAGE_PATH } from 'src/consts/paths';
+import { API_STATUS_CODE } from 'src/consts/status-code';
+import { getFetchImageAPIPath } from 'src/consts/url';
 import { APIException } from 'src/exceptions/api.exception';
+import { ImageRepository } from 'src/models/image/image.repository';
+import { deleteFile, getFileSize } from 'src/utils/file';
+import * as uniqId from 'uniqid';
+import { ImageUploadAPIContent } from './image-upload.dto';
 
 @Injectable()
 export class ImageUploadService {
@@ -100,16 +100,16 @@ export class ImageUploadService {
     }
 
     if (options.noRepeat && existImageEntity !== null) {
-      targetFilePath = path.join(IMAGE_PATH, existImageEntity.id);
+      targetFilePath = path.join(IMAGE_STORAGE_PATH, existImageEntity.id);
       fileSize = await getFileSize(targetFilePath);
       return {
         id: existImageEntity.id,
         size: fileSize,
-        url: getFetchImageUrl(existImageEntity.id),
+        url: getFetchImageAPIPath(existImageEntity.id),
       };
     }
 
-    targetFilePath = path.join(IMAGE_PATH, imageId);
+    targetFilePath = path.join(IMAGE_STORAGE_PATH, imageId);
     const [toFileErr] = await to(sharpInstance.toFile(targetFilePath));
     if (toFileErr) {
       deleteFile(tempImageFilePath);
@@ -148,7 +148,7 @@ export class ImageUploadService {
     return {
       id: imageId,
       size: fileSize,
-      url: getFetchImageUrl(imageId),
+      url: getFetchImageAPIPath(imageId),
     };
   }
 }

@@ -1,10 +1,10 @@
-import { ExceptionFilter, Catch, ArgumentsHost } from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
 import { MulterError } from 'multer';
 import { API_STATUS_CODE } from 'src/consts/status-code';
-import { APIResponse } from 'src/interfaces/utils';
+import { IAPIResponse } from 'src/interfaces/utils';
 @Catch(MulterError)
 export class MulterExceptionFilter implements ExceptionFilter {
-  catch(exception: MulterError, _host: ArgumentsHost): APIResponse<null> {
+  catch(exception: MulterError, _host: ArgumentsHost): IAPIResponse<null> {
     // const ctx = host.switchToHttp();
     // const response = ctx.getResponse();
     console.log('multer exception', exception);

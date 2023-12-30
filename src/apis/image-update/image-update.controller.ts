@@ -1,15 +1,15 @@
 import { Controller, Param, Post, UseFilters, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
-import { ImageUpdateInfoParams } from './image-update.dto';
-import { ImageUpdateService } from './image-update.service';
-import { APIExceptionFilter } from 'src/request-circles/filters/api-exception.filter';
-import { APIInterceptor } from 'src/request-circles/interceptors/api-interceptor';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { CONFIG } from 'src/consts/config';
 import { IMAGE_TEMP_PATH } from 'src/consts/paths';
+import { APIExceptionFilter } from 'src/request-circles/filters/api-exception.filter';
+import { APIInterceptor } from 'src/request-circles/interceptors/api-interceptor';
 import { ParamsValidationPipe } from 'src/request-circles/pipes/params-validation.pipe';
 import * as uuid from 'uuid';
+import { ImageUpdateInfoParams } from './image-update.dto';
+import { ImageUpdateService } from './image-update.service';
 
 @Controller('image/update')
 @UseFilters(APIExceptionFilter)

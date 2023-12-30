@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import * as path from 'path';
 import { DependenciesFlag } from 'src/consts/dep-flags';
-import { VIDEO_PATH } from 'src/consts/paths';
+import { VIDEO_STORAGE_PATH } from 'src/consts/paths';
 import { VideoRepository } from 'src/models/video/video.repository';
 import { deleteDir } from 'src/utils/file';
 
@@ -14,6 +14,6 @@ export class VideoDeleteService {
 
   async delete(id: string): Promise<void> {
     await this.videoRepository.removeById(id);
-    await deleteDir(path.join(VIDEO_PATH, id));
+    await deleteDir(path.join(VIDEO_STORAGE_PATH, id));
   }
 }

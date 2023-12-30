@@ -1,13 +1,13 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
 import { Response } from 'express';
 import { API_STATUS_CODE } from 'src/consts/status-code';
-import { APIResponse } from 'src/interfaces/utils';
+import { IAPIResponse } from 'src/interfaces/utils';
 
 @Catch(HttpException)
 export class GlobalHttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response<APIResponse>>();
+    const response = ctx.getResponse<Response<IAPIResponse>>();
     console.log(exception);
     switch (exception.getStatus()) {
       case HttpStatus.NOT_FOUND:

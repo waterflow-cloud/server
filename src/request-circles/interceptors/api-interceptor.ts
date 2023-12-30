@@ -2,14 +2,14 @@ import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nes
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { API_STATUS_CODE } from 'src/consts/status-code';
-import { APIResponse } from 'src/interfaces/utils';
+import { IAPIResponse } from 'src/interfaces/utils';
 
 @Injectable()
 export class APIInterceptor<T> implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler<T>): Observable<any> {
     return next.handle().pipe(
       map(
-        (data): APIResponse<T> => ({
+        (data): IAPIResponse<T> => ({
           code: API_STATUS_CODE.REQUEST_OK,
           timestamp: Date.now(),
           content: data,

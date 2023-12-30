@@ -3,7 +3,7 @@ import to from 'await-to-js';
 import * as path from 'path';
 import * as sharp from 'sharp';
 import { DependenciesFlag } from 'src/consts/dep-flags';
-import { IMAGE_PATH } from 'src/consts/paths';
+import { IMAGE_STORAGE_PATH } from 'src/consts/paths';
 import { API_STATUS_CODE } from 'src/consts/status-code';
 import { APIException } from 'src/exceptions/api.exception';
 import { ResourceException } from 'src/exceptions/resource.exception';
@@ -37,7 +37,7 @@ export class ImageFetchService {
   }
 
   async fetchImage(id: string): Promise<{ format: string; buffer: Buffer }> {
-    const imageFilePath = path.join(IMAGE_PATH, id);
+    const imageFilePath = path.join(IMAGE_STORAGE_PATH, id);
 
     /** Query the entity in database record */
     const [errImageEntity, imageEntity] = await to(this.imageRepository.findBy({ id: id }));

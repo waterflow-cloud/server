@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import * as path from 'path';
 import { DependenciesFlag } from 'src/consts/dep-flags';
-import { IMAGE_PATH } from 'src/consts/paths';
+import { IMAGE_STORAGE_PATH } from 'src/consts/paths';
 import { ImageRepository } from 'src/models/image/image.repository';
 import { deleteFile } from 'src/utils/file';
 
@@ -14,6 +14,6 @@ export class ImageDeleteService {
 
   async delete(id: string): Promise<void> {
     await this.imageRepository.removeById(id);
-    await deleteFile(path.join(IMAGE_PATH, id));
+    await deleteFile(path.join(IMAGE_STORAGE_PATH, id));
   }
 }

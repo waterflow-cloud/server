@@ -1,7 +1,7 @@
-import uuid from 'uuid';
 import { MD5 } from 'crypto-js';
+import uuid from 'uuid';
 
-const genKey = (): string => {
+export const genKey = (): string => {
   const salt = uuid.v4();
   const key: string = MD5(salt).toString();
   return key;

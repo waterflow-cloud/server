@@ -1,19 +1,19 @@
+import { Inject, Injectable } from '@nestjs/common';
+import to from 'await-to-js';
 import * as fluentFFmpeg from 'fluent-ffmpeg';
 import * as fsp from 'fs/promises';
 import * as path from 'path';
-import * as uniqId from 'uniqid';
-import to from 'await-to-js';
-import { API_STATUS_CODE } from 'src/consts/status-code';
-import { APIException } from 'src/exceptions/api.exception';
 import { CONFIG } from 'src/consts/config';
-import { convertUnit } from 'src/utils/calc';
-import { deleteDir, deleteFile, getDirSize, getFileMD5Hash } from 'src/utils/file';
 import { DependenciesFlag } from 'src/consts/dep-flags';
-import { getFetchVideoUrl } from 'src/consts/url';
-import { Inject, Injectable } from '@nestjs/common';
-import { promisify } from 'util';
-import { VIDEO_PATH } from 'src/consts/paths';
+import { VIDEO_STORAGE_PATH } from 'src/consts/paths';
+import { API_STATUS_CODE } from 'src/consts/status-code';
+import { getFetchVideoAPIPath } from 'src/consts/url';
+import { APIException } from 'src/exceptions/api.exception';
 import { VideoRepository } from 'src/models/video/video.repository';
+import { convertDigitalUnit } from 'src/utils/calc';
+import { deleteDir, deleteFile, getDirSize, getFileMD5Hash } from 'src/utils/file';
+import * as uniqId from 'uniqid';
+import { promisify } from 'util';
 import { VideoUploadAPIContent } from './video-upload.dto';
 
 @Injectable()
@@ -58,7 +58,7 @@ export class VideoUploadService {
       deleteFile(tempVideoFilePath);
       return {
         id: existVideoEntity.id,
-        url: getFetchVideoUrl(existVideoEntity.id),
+        url: getFetchVideoAPIPath(existVideoEntity.id),
       };
     }
 
@@ -71,7 +71,7 @@ export class VideoUploadService {
     /* Generate a unique id for video entity. And id is the filename of video-m3u8 file. */
     const videoId = uniqId(`${CONFIG.platformFlag}-`);
 
-    const targetStorageDirectoryPath = path.join(VIDEO_PATH, videoId);
+    const targetStorageDirectoryPath = path.join(VIDEO_STORAGE_PATH, videoId);
     await fsp.mkdir(targetStorageDirectoryPath);
 
     /**
@@ -115,7 +115,7 @@ export class VideoUploadService {
       throw new APIException(API_STATUS_CODE.INTERNAL_ERROR, 500);
     }
 
-    const videoSize = convertUnit(await getDirSize(targetStorageDirectoryPath), 'Byte', 'MB');
+    const videoSize = convertDigitalUnit(await getDirSize(targetStorageDirectoryPath), 'Byte', 'MB');
 
     const [errCreateAndSaveVideo] = await to(
       this.videoRepository.createAndSave({
@@ -141,7 +141,7 @@ export class VideoUploadService {
 
     return {
       id: videoId,
-      url: getFetchVideoUrl(videoId),
+      url: getFetchVideoAPIPath(videoId),
     };
   }
 }

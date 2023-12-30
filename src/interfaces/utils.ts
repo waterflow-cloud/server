@@ -1,7 +1,4 @@
-/**
- *
- */
-export type APIResponse<T = any> = {
+export type IAPIResponse<T = any> = {
   code: number;
   message?: string[] | null;
   timestamp: number;

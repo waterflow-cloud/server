@@ -1,7 +1,7 @@
 import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
 import { Response } from 'express';
-import { APIResponse } from 'src/interfaces/utils';
 import { APIException } from 'src/exceptions/api.exception';
+import { IAPIResponse } from 'src/interfaces/utils';
 
 @Catch(APIException)
 export class APIExceptionFilter implements ExceptionFilter {
@@ -11,7 +11,7 @@ export class APIExceptionFilter implements ExceptionFilter {
     const httpStatusCode = exception.httpStatusCode;
     console.log(exception);
     response.header('Access-Control-Allow-Origin', '*');
-    const response_json: APIResponse<null> = {
+    const response_json: IAPIResponse<null> = {
       code: exception.apiStatusCode,
       timestamp: Date.now(),
       content: null,

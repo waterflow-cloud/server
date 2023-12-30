@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { ImageFetchService } from './image-fetch.service';
+import { ImageModelModule } from 'src/models/image/image.module';
 import { DataStorageModule } from 'src/repository/database-storage/data-storage.module';
 import { ImageFetchController } from './image-fetch.controller';
-import { ImageModelModule } from 'src/models/image/image.module';
+import { ImageFetchService } from './image-fetch.service';
 
 @Module({
   imports: [DataStorageModule, ImageModelModule],

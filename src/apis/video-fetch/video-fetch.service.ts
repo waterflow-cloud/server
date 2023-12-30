@@ -3,7 +3,7 @@ import to from 'await-to-js';
 import * as fsp from 'fs/promises';
 import * as path from 'path';
 import { DependenciesFlag } from 'src/consts/dep-flags';
-import { VIDEO_PATH } from 'src/consts/paths';
+import { VIDEO_STORAGE_PATH } from 'src/consts/paths';
 import { API_STATUS_CODE } from 'src/consts/status-code';
 import { APIException } from 'src/exceptions/api.exception';
 import { ResourceException } from 'src/exceptions/resource.exception';
@@ -39,7 +39,7 @@ export class VideoFetchService {
   }
 
   async fetchM3u8(id: string): Promise<string> {
-    const m3u8FilePath = path.join(VIDEO_PATH, id, `${id}.m3u8`);
+    const m3u8FilePath = path.join(VIDEO_STORAGE_PATH, id, `${id}.m3u8`);
 
     /** Query the entity in database record */
     const [errVideoEntity, videoEntity] = await to(this.videoRepository.findBy({ id: id }));
@@ -56,7 +56,7 @@ export class VideoFetchService {
   }
 
   async fetchChuck(id: string, chuckFileName: string): Promise<Buffer> {
-    const chuckFilePath = path.join(VIDEO_PATH, id, 'chunks', chuckFileName);
+    const chuckFilePath = path.join(VIDEO_STORAGE_PATH, id, 'chunks', chuckFileName);
     const chunkBuffer = await fsp.readFile(chuckFilePath);
     return chunkBuffer;
   }

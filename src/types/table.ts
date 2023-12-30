@@ -1,4 +1,4 @@
-export type ImageTable = {
+export type TImageTable = {
   id: string;
   name: string;
   comment: string | null;
@@ -11,7 +11,7 @@ export type ImageTable = {
   fileHash: string;
 };
 
-export type VideoTable = {
+export type TVideoTable = {
   id: string;
   name: string;
   comment: string | null;

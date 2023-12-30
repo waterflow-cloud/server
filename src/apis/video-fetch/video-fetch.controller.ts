@@ -1,10 +1,10 @@
 import { Controller, Get, Param, Res, UseFilters, UseInterceptors } from '@nestjs/common';
 import { Response } from 'express';
 import { APIExceptionFilter } from 'src/request-circles/filters/api-exception.filter';
+import { ResourceExceptionFilter } from 'src/request-circles/filters/resource-exception.filter';
 import { APIInterceptor } from 'src/request-circles/interceptors/api-interceptor';
 import { VideoFetchInfoAPIContent } from './video-fetch.dto';
 import { VideoFetchService } from './video-fetch.service';
-import { ResourceExceptionFilter } from 'src/request-circles/filters/resource-exception.filter';
 
 @Controller('video/fetch')
 export class VideoFetchController {
