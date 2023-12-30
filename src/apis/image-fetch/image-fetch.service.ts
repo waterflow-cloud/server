@@ -8,7 +8,7 @@ import { API_STATUS_CODE } from 'src/consts/status-code';
 import { APIException } from 'src/exceptions/api.exception';
 import { ResourceException } from 'src/exceptions/resource.exception';
 import { ImageRepository } from 'src/models/image/image.repository';
-import { fileExist } from 'src/utils/file';
+import { isFileExist } from 'src/utils/file';
 import { ImageFetchInfoAPIContent } from './image-fetch.dto';
 
 @Injectable()
@@ -43,7 +43,7 @@ export class ImageFetchService {
     const [errImageEntity, imageEntity] = await to(this.imageRepository.findBy({ id: id }));
 
     /** Process the locked/not-found exception for image resource */
-    if (!fileExist(imageFilePath)) throw new ResourceException('ImageNotFound');
+    if (!isFileExist(imageFilePath)) throw new ResourceException('ImageNotFound');
     if (errImageEntity) throw new ResourceException('ImageLocked');
     if (imageEntity == null) throw new ResourceException('ImageNotFound');
     if (imageEntity.locked) throw new ResourceException('ImageLocked');

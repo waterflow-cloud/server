@@ -8,7 +8,7 @@ import { API_STATUS_CODE } from 'src/consts/status-code';
 import { APIException } from 'src/exceptions/api.exception';
 import { ResourceException } from 'src/exceptions/resource.exception';
 import { VideoRepository } from 'src/models/video/video.repository';
-import { fileExist } from 'src/utils/file';
+import { isFileExist } from 'src/utils/file';
 import { VideoFetchInfoAPIContent } from './video-fetch.dto';
 
 @Injectable()
@@ -45,7 +45,7 @@ export class VideoFetchService {
     const [errVideoEntity, videoEntity] = await to(this.videoRepository.findBy({ id: id }));
 
     /** Process the locked/not-found exception for image resource */
-    if (!fileExist(m3u8FilePath)) throw new ResourceException('VideoNotFound');
+    if (!isFileExist(m3u8FilePath)) throw new ResourceException('VideoNotFound');
     if (errVideoEntity) throw new ResourceException('VideoLocked');
     if (videoEntity == null) throw new ResourceException('VideoNotFound');
     if (videoEntity.locked) throw new ResourceException('VideoLocked');
