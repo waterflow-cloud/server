@@ -43,10 +43,10 @@ export class ImageFetchService {
     const [errImageEntity, imageEntity] = await to(this.imageRepository.findBy({ id: id }));
 
     /** Process the locked/not-found exception for image resource */
-    if (!isFileExist(imageFilePath)) throw new ResourceException('ImageNotFound');
-    if (errImageEntity) throw new ResourceException('ImageLocked');
-    if (imageEntity == null) throw new ResourceException('ImageNotFound');
-    if (imageEntity.locked) throw new ResourceException('ImageLocked');
+    if (!isFileExist(imageFilePath)) throw new ResourceException('ImageNotFound', 404);
+    if (errImageEntity) throw new ResourceException('ImageLocked', 403);
+    if (imageEntity == null) throw new ResourceException('ImageNotFound', 404);
+    if (imageEntity.locked) throw new ResourceException('ImageLocked', 403);
 
     const imageSharp = sharp(imageFilePath);
     const imageBuffer = await imageSharp.toBuffer();

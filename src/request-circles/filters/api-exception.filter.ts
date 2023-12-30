@@ -11,11 +11,11 @@ export class APIExceptionFilter implements ExceptionFilter {
     const httpStatusCode = exception.httpStatusCode;
     console.log(exception);
     response.header('Access-Control-Allow-Origin', '*');
-    const response_json: IAPIResponse<null> = {
+    const responseJSON: IAPIResponse<null> = {
       code: exception.apiStatusCode,
       timestamp: Date.now(),
       content: null,
     };
-    response.status(httpStatusCode).json(response_json);
+    response.status(httpStatusCode).json(responseJSON);
   }
 }

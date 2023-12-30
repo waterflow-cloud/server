@@ -45,10 +45,10 @@ export class VideoFetchService {
     const [errVideoEntity, videoEntity] = await to(this.videoRepository.findBy({ id: id }));
 
     /** Process the locked/not-found exception for image resource */
-    if (!isFileExist(m3u8FilePath)) throw new ResourceException('VideoNotFound');
-    if (errVideoEntity) throw new ResourceException('VideoLocked');
-    if (videoEntity == null) throw new ResourceException('VideoNotFound');
-    if (videoEntity.locked) throw new ResourceException('VideoLocked');
+    if (!isFileExist(m3u8FilePath)) throw new ResourceException('VideoNotFound', 404);
+    if (errVideoEntity) throw new ResourceException('VideoLocked', 403);
+    if (videoEntity == null) throw new ResourceException('VideoNotFound', 404);
+    if (videoEntity.locked) throw new ResourceException('VideoLocked', 403);
 
     const m3u8Content = await fsp.readFile(m3u8FilePath, 'utf-8');
 

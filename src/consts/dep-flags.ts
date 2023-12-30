@@ -5,6 +5,5 @@ export const DependenciesFlag = {
 
   DATABASE_STORAGE: Symbol('database storage'),
   OBJECT_STORAGE: Symbol('object storage'),
-
   FILESYSTEM_STORAGE: Symbol('filesystem storage'),
 };

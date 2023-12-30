@@ -2,6 +2,7 @@ import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
 import { MulterError } from 'multer';
 import { API_STATUS_CODE } from 'src/consts/status-code';
 import { IAPIResponse } from 'src/interfaces/utils';
+
 @Catch(MulterError)
 export class MulterExceptionFilter implements ExceptionFilter {
   catch(exception: MulterError, _host: ArgumentsHost): IAPIResponse<null> {
