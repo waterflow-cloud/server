@@ -38,8 +38,8 @@ export class VideoUploadController {
       comment: body.comment,
       category: body.category,
       coverImage: body['cover-image'],
-      noRepeat: body['no-repeat'] === 'true',
-      useCompress: body['use-compress'] === 'true',
+      reuse: body['reuse'] === 'true',
+      compress: body.compress,
     });
   }
 }

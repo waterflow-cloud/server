@@ -4,12 +4,9 @@ import * as fsp from 'fs/promises';
 import * as path from 'path';
 import { DependenciesFlag } from 'src/consts/dep-flags';
 import { VIDEO_STORAGE_PATH } from 'src/consts/paths';
-import { API_STATUS_CODE } from 'src/consts/status-code';
-import { APIException } from 'src/exceptions/api.exception';
 import { ResourceException } from 'src/exceptions/resource.exception';
 import { VideoRepository } from 'src/models/video/video.repository';
 import { isFileExist } from 'src/utils/file';
-import { VideoFetchInfoAPIContent } from './video-fetch.dto';
 
 @Injectable()
 export class VideoFetchService {
@@ -17,26 +14,6 @@ export class VideoFetchService {
     @Inject(DependenciesFlag.VIDEO_REPOSITORY)
     private readonly videoRepository: VideoRepository,
   ) {}
-
-  async fetchInfo(id: string): Promise<VideoFetchInfoAPIContent | null> {
-    const [errImageEntity, imageEntity] = await to(this.videoRepository.findBy({ id: id }));
-    if (errImageEntity) throw new APIException(API_STATUS_CODE.INTERNAL_ERROR, 500);
-    if (imageEntity === null) throw new APIException(API_STATUS_CODE.RESOURCE_NOT_FOUNT, 404);
-    return {
-      id: imageEntity.id,
-      name: imageEntity.name,
-      comment: imageEntity.comment,
-      category: imageEntity.category,
-      timestamp: imageEntity.timestamp,
-      coverImage: imageEntity.coverImage,
-      fileHash: imageEntity.fileHash,
-      width: imageEntity.width,
-      height: imageEntity.height,
-      duration: imageEntity.duration,
-      size: imageEntity.size,
-      locked: imageEntity.locked,
-    };
-  }
 
   async fetchM3u8(id: string): Promise<string> {
     const m3u8FilePath = path.join(VIDEO_STORAGE_PATH, id, `${id}.m3u8`);

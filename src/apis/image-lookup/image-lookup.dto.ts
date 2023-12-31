@@ -1,9 +1,9 @@
-export class ImageFetchImageQueries {
+export class TImageFetchImageQueries {
   width?: number;
   height?: number;
 }
 
-export type ImageFetchInfoAPIContent = {
+export type TImageLookupAPIContent = {
   id: string;
   name: string | null;
   comment: string | null;

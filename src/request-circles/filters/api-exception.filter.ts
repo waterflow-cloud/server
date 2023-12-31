@@ -8,14 +8,12 @@ export class APIExceptionFilter implements ExceptionFilter {
   catch(exception: APIException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
-    const httpStatusCode = exception.httpStatusCode;
-    console.log(exception);
     response.header('Access-Control-Allow-Origin', '*');
-    const responseJSON: IAPIResponse<null> = {
+    const responseJSON: IAPIResponse<string | null> = {
       code: exception.apiStatusCode,
       timestamp: Date.now(),
-      content: null,
+      content: exception.message ? null : exception.message,
     };
-    response.status(httpStatusCode).json(responseJSON);
+    response.status(200).json(responseJSON);
   }
 }

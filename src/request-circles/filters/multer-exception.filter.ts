@@ -5,23 +5,26 @@ import { IAPIResponse } from 'src/interfaces/utils';
 
 @Catch(MulterError)
 export class MulterExceptionFilter implements ExceptionFilter {
-  catch(exception: MulterError, _host: ArgumentsHost): IAPIResponse<null> {
-    // const ctx = host.switchToHttp();
-    // const response = ctx.getResponse();
+  catch(exception: MulterError, host: ArgumentsHost): IAPIResponse<null> {
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse();
     console.log('multer exception', exception);
     switch (exception.code) {
       case 'LIMIT_FILE_SIZE':
-        return {
+        return response.status(200).json({
           timestamp: Date.now(),
           code: API_STATUS_CODE.FILE_SIZE_OVERFLOW,
-        };
+        });
       case 'LIMIT_FILE_COUNT':
-        return {
+        return response.status(200).json({
           timestamp: Date.now(),
           code: API_STATUS_CODE.FILE_COUNT_OVERFLOW,
-        };
+        });
       default:
-        return { timestamp: Date.now(), code: API_STATUS_CODE.UNKNOWN_ERROR };
+        return response.status(200).json({
+          timestamp: Date.now(),
+          code: API_STATUS_CODE.UNKNOWN_ERROR,
+        });
     }
   }
 }

@@ -1,4 +1,4 @@
-export type VideoFetchInfoAPIContent = {
+export type TVideoLookupAPIContent = {
   id: string;
   name: string | null;
   comment: string | null;

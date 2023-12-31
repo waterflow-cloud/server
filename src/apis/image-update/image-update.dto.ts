@@ -27,6 +27,11 @@ export class ImageUpdateInfoParams {
   height?: number | null;
 
   @IsOptional()
-  @IsIn(['fill', 'inside', 'outside', 'cover', 'contain'])
-  'fit-mode'?: 'fill' | 'inside' | 'outside' | 'cover' | 'contain' | null;
+  @Type(() => Number)
+  @IsInt()
+  compress?: number | null;
+
+  @IsOptional()
+  @IsIn(['true', 'false'])
+  'use-webp'?: 'true' | 'false' | null;
 }

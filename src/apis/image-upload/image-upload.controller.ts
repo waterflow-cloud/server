@@ -39,10 +39,9 @@ export class ImageUploadController {
       category: body.category,
       height: body.height,
       width: body.width,
-      fitMode: body['fit-mode'],
-      noRepeat: body['no-repeat'] === 'true',
       useWebp: body['use-webp'] === 'true',
-      useCompress: body['use-compress'] === 'true',
+      reuse: body.reuse === 'true',
+      compress: body.compress,
     });
   }
 }

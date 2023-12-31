@@ -30,8 +30,8 @@ export class VideoUploadService {
       comment?: string | null;
       category?: string | null;
       coverImage?: string | null;
-      noRepeat?: boolean;
-      useCompress?: boolean;
+      reuse?: boolean;
+      compress?: number;
     },
   ): Promise<VideoUploadAPIContent> {
     const tempVideoFilePath = fileTempPath;
@@ -41,20 +41,20 @@ export class VideoUploadService {
     );
     if (errVideoMeta) {
       deleteFile(tempVideoFilePath);
-      throw new APIException(API_STATUS_CODE.ILLEGAL_FILE_FORMAT, 400);
+      throw new APIException(API_STATUS_CODE.ILLEGAL_FILE_FORMAT);
     }
     const [errVideoHash, videoHash] = await to(getFileMD5Hash(fileTempPath));
     if (errVideoHash) {
       deleteFile(tempVideoFilePath);
-      throw new APIException(API_STATUS_CODE.INTERNAL_ERROR, 500);
+      throw new APIException(API_STATUS_CODE.INTERNAL_ERROR);
     }
 
     const [errExistVideoEntity, existVideoEntity] = await to(this.videoRepository.findBy({ fileHash: videoHash }));
     if (errExistVideoEntity) {
       deleteFile(tempVideoFilePath);
-      throw new APIException(API_STATUS_CODE.INTERNAL_ERROR, 500);
+      throw new APIException(API_STATUS_CODE.INTERNAL_ERROR);
     }
-    if (options.noRepeat && existVideoEntity !== null) {
+    if (options.reuse && existVideoEntity !== null) {
       deleteFile(tempVideoFilePath);
       return {
         id: existVideoEntity.id,
@@ -93,9 +93,10 @@ export class VideoUploadService {
       .addOption('-hls_list_size', '0')
       .addOption('-hls_base_url', './chunks/')
       .addOption('-hls_segment_filename', chuckFilesPath)
+      .addOption('-c:a', 'copy')
       .output(m3u8FilePath);
-    if (options.useCompress) {
-      ffmpegInstance.audioCodec('aac').audioBitrate('128k').videoBitrate('800k').addOption('-crf', '23');
+    if (options.compress) {
+      ffmpegInstance.videoBitrate(`${options.compress}%`);
     }
 
     const runFfmpegTask = async (): Promise<void> => {
@@ -112,7 +113,7 @@ export class VideoUploadService {
       console.log(errRunTask);
       deleteFile(tempVideoFilePath);
       deleteDir(targetStorageDirectoryPath);
-      throw new APIException(API_STATUS_CODE.INTERNAL_ERROR, 500);
+      throw new APIException(API_STATUS_CODE.INTERNAL_ERROR);
     }
 
     const videoSize = convertDigitalUnit(await getDirSize(targetStorageDirectoryPath), 'Byte', 'MB');

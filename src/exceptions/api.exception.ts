@@ -1,4 +1,5 @@
 import { HttpException } from '@nestjs/common';
+import { API_STATUS_CODE } from 'src/consts/status-code';
 
 export class APIException extends HttpException {
   /**
@@ -8,12 +9,11 @@ export class APIException extends HttpException {
    * @param message Optional message show in error stack and log.
    */
   constructor(
-    public readonly apiStatusCode: number,
-    public readonly httpStatusCode: number,
+    public readonly apiStatusCode: (typeof API_STATUS_CODE)[keyof typeof API_STATUS_CODE],
     public readonly message: string | null = null,
   ) {
-    super(message, httpStatusCode);
+    super(message, 200);
     this.apiStatusCode = apiStatusCode;
-    this.httpStatusCode = httpStatusCode;
+    this.message = message;
   }
 }

@@ -30,10 +30,9 @@ export class ImageUploadService {
       category?: string | null;
       width?: number | null;
       height?: number | null;
-      fitMode?: 'fill' | 'inside' | 'outside' | 'cover' | 'contain';
-      noRepeat?: boolean;
       useWebp?: boolean;
-      useCompress?: boolean;
+      compress?: number;
+      reuse?: boolean;
     },
   ): Promise<ImageUploadAPIContent> {
     /** Load and instant image data. */
@@ -41,45 +40,43 @@ export class ImageUploadService {
     const [errImageOriginBuffer, imageOriginBuffer] = await to(fsp.readFile(tempImageFilePath));
     if (errImageOriginBuffer) {
       deleteFile(tempImageFilePath);
-      throw new APIException(API_STATUS_CODE.INTERNAL_ERROR, 500);
+      throw new APIException(API_STATUS_CODE.INTERNAL_ERROR);
     }
     const sharpInstance = sharp(imageOriginBuffer);
 
     const [errImageMetaData, imageMetaData] = await to(sharpInstance.metadata());
     if (errImageMetaData) {
       deleteFile(tempImageFilePath);
-      throw new APIException(API_STATUS_CODE.ILLEGAL_FILE_FORMAT, 400);
+      throw new APIException(API_STATUS_CODE.ILLEGAL_FILE_FORMAT);
     }
 
     /* Check the image format, only following formats listed are permitted */
     const validImageFormats = ['jpg', 'jpeg', 'svg', 'png', 'webp', 'gif', 'bmp', 'tif'];
     if (!validImageFormats.includes(imageMetaData.format)) {
       deleteFile(tempImageFilePath);
-      throw new APIException(API_STATUS_CODE.ILLEGAL_FILE_FORMAT, 400);
+      throw new APIException(API_STATUS_CODE.ILLEGAL_FILE_FORMAT);
     }
 
     /** Resize the target image according to fit-mode if the width or height are specified. */
     if (options.height || options.width) {
-      sharpInstance.resize(options.height, options.width, {
-        fit: options.fitMode ?? 'fill',
-      });
+      sharpInstance.resize(options.height, options.width);
     }
 
     /** Reformat target image with quality optimization. */
-    const targetQuality = options.useCompress ? CONFIG.defaultImageCompressRatio : 100;
+    const targetQuality = options.compress;
     const targetFileExtname = options.useWebp ? 'webp' : imageMetaData.format;
     try {
       sharpInstance.toFormat(targetFileExtname, { quality: targetQuality });
     } catch {
       deleteFile(tempImageFilePath);
-      throw new APIException(API_STATUS_CODE.INTERNAL_ERROR, 500);
+      throw new APIException(API_STATUS_CODE.INTERNAL_ERROR);
     }
 
     /** Get the hash from image buffer */
     const [errImageBuffer, imageBuffer] = await to(sharpInstance.toBuffer());
     if (errImageBuffer) {
       deleteFile(tempImageFilePath);
-      throw new APIException(API_STATUS_CODE.INTERNAL_ERROR, 500);
+      throw new APIException(API_STATUS_CODE.INTERNAL_ERROR);
     }
     const hash = crypto.createHash('md5').update(imageBuffer).digest('hex');
 
@@ -96,10 +93,10 @@ export class ImageUploadService {
     const [errExistImageEntity, existImageEntity] = await to(this.imageRepository.findBy({ fileHash: hash }));
     if (errExistImageEntity) {
       deleteFile(tempImageFilePath);
-      throw new APIException(API_STATUS_CODE.INTERNAL_ERROR, 500);
+      throw new APIException(API_STATUS_CODE.INTERNAL_ERROR);
     }
 
-    if (options.noRepeat && existImageEntity !== null) {
+    if (options.reuse && existImageEntity !== null) {
       targetFilePath = path.join(IMAGE_STORAGE_PATH, existImageEntity.id);
       fileSize = await getFileSize(targetFilePath);
       return {
@@ -113,7 +110,7 @@ export class ImageUploadService {
     const [toFileErr] = await to(sharpInstance.toFile(targetFilePath));
     if (toFileErr) {
       deleteFile(tempImageFilePath);
-      throw new APIException(API_STATUS_CODE.INTERNAL_ERROR, 500);
+      throw new APIException(API_STATUS_CODE.INTERNAL_ERROR);
     }
     fileSize = await getFileSize(targetFilePath);
 
@@ -136,7 +133,7 @@ export class ImageUploadService {
     if (errCreateImageEntity) {
       deleteFile(tempImageFilePath);
       deleteFile(targetFilePath);
-      throw new APIException(API_STATUS_CODE.INTERNAL_ERROR, 500);
+      throw new APIException(API_STATUS_CODE.INTERNAL_ERROR);
     }
 
     /**

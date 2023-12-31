@@ -24,20 +24,17 @@ export class ImageUploadRequestBody {
   height?: number | null;
 
   @IsOptional()
-  @IsIn(['fill', 'inside', 'outside', 'cover', 'contain'])
-  'fit-mode'?: 'fill' | 'inside' | 'outside' | 'cover' | 'contain' | null;
-
-  @IsOptional()
-  @IsIn(['true', 'false'])
-  'no-repeat'?: 'true' | 'false' | null;
-
-  @IsOptional()
-  @IsIn(['true', 'false'])
-  'use-compress'?: 'true' | 'false' | null;
+  @Type(() => Number)
+  @IsInt()
+  compress?: number | null;
 
   @IsOptional()
   @IsIn(['true', 'false'])
   'use-webp'?: 'true' | 'false' | null;
+
+  @IsOptional()
+  @IsIn(['true', 'false'])
+  reuse?: 'true' | 'false' | null;
 }
 
 export type ImageUploadAPIContent = {

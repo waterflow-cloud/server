@@ -6,7 +6,8 @@ export type ResourceExceptionType =
   | 'ImageLocked'
   | 'VideoLocked'
   | 'ImageBroken'
-  | 'VideoBroken';
+  | 'VideoBroken'
+  | 'UnknownError';
 
 export class ResourceException extends HttpException {
   /**
@@ -18,9 +19,9 @@ export class ResourceException extends HttpException {
   constructor(
     public readonly exceptionType: ResourceExceptionType,
     public readonly httpStatusCode: number,
-    public readonly message: string | null = null,
   ) {
-    super(message, httpStatusCode);
+    super(exceptionType, httpStatusCode);
     this.exceptionType = exceptionType;
+    this.httpStatusCode = httpStatusCode;
   }
 }

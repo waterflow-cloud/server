@@ -1,4 +1,5 @@
-import { IsIn, IsOptional, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsIn, IsInt, IsOptional, IsString } from 'class-validator';
 
 export class VideoUploadRequestBody {
   @IsString()
@@ -14,15 +15,16 @@ export class VideoUploadRequestBody {
 
   @IsOptional()
   @IsIn(['true', 'false'])
-  'no-repeat'?: 'true' | 'false' | null;
+  reuse?: 'true' | 'false' | null;
 
   @IsOptional()
   @IsString()
   'cover-image'?: string | null;
 
   @IsOptional()
-  @IsIn(['true', 'false'])
-  'use-compress'?: 'true' | 'false' | null;
+  @Type(() => Number)
+  @IsInt()
+  compress?: number | null;
 }
 
 export type VideoUploadAPIContent = {
